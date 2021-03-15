@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+    useState
+} from 'react';
 import injectSheet from 'react-jss';
 import stylesheet from './stylesheet';
 import {
@@ -8,14 +10,22 @@ import {
 import {
     TextInput,
     Button,
-    Icon,
-    Link
+    Icon
 } from '../../../../core/components';
+import {
+    client
+} from '../../../../api';
+import {
+    gql
+} from '@apollo/client';
 
 const Signup = ({
-    classes,
-    history
+    classes
 }) => {
+    const [fullName, setFullName] = useState("");
+    const [userName, setUserName] = useState("");
+    const [password, setPassword] = useState("");
+
     const [tokens, setTokens] = useTokens();
     const [theme, setTheme] = useTheme();
 
@@ -27,6 +37,36 @@ const Signup = ({
         borders,
         spaces
     } = tokens;
+
+    const register = () => {
+        client.mutate({
+            mutation: gql`
+                mutation signup(
+                    $fullName: String!,
+                    $userName: String!,
+                    $password: String!
+                ) {
+                    signup(
+                        fullName: $fullName,
+                        userName: $userName,
+                        password: $password
+                    ) {
+                        message,
+                        code
+                    }
+                }
+            `,
+            variables: {
+                fullName: fullName,
+                userName: userName,
+                password: password
+            }
+        }).then(e => {
+            console.log(e);
+        }).catch(e => {
+            console.log(e.message);
+        });
+    };
 
     return <div
         className={classes.container}
@@ -84,12 +124,16 @@ const Signup = ({
                 </div>
                 <TextInput
                     placeholder="Username"
+                    value={userName}
+                    onChange={e => setUserName(e)}
                     style={{
                         marginBottom: spaces.content * 1.5
                     }}
                 />
                 <TextInput
                     placeholder="Fullname"
+                    value={fullName}
+                    onChange={e => setFullName(e)}
                     style={{
                         marginBottom: spaces.content * 1.5
                     }}
@@ -97,6 +141,8 @@ const Signup = ({
                 <TextInput
                     placeholder="Password"
                     type="password"
+                    value={password}
+                    onChange={e => setPassword(e)}
                     style={{
                         marginBottom: spaces.content * 1.5
                     }}
@@ -110,6 +156,7 @@ const Signup = ({
                 />
                 <Button
                     value="Signup"
+                    onClick={() => register()}
                 />
             </div>
         </div>
