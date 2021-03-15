@@ -21,7 +21,7 @@ const Home = ({
             padding: spaces.container
         }}
     >
-        Home page
+        Welcome to home page.
     </div>;
 };
 export default injectSheet(stylesheet)(Home);

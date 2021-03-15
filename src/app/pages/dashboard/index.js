@@ -16,7 +16,7 @@ const Dashboard = ({
     useEffect(() => {
         if(globalState.userData && globalState.userData.login) {
             history.push("/dashboard/main");
-        } else {
+        } else if(window.location.pathname.indexOf("/signup") === -1) {
             history.push("/dashboard/signin");
         }
     }, [globalState.userData]);

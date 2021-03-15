@@ -8,5 +8,11 @@ export const DEFAULT_TOKENS_STATE = {
     spaces: {
         container: 20,
         content: 10
+    },
+    borders: {
+        card: 2
+    },
+    radiuses: {
+        card: 10
     }
 };
