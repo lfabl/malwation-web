@@ -122,6 +122,7 @@ const Signin = ({
                         token: response.token
                     }
                 });
+                if(_rememberMe) localStorage.setItem('token', response.token);
             } else {
                 alert(response.message);
             }
