@@ -19,8 +19,9 @@ import {
     gql
 } from '@apollo/client';
 import md5 from 'md5';
-
-const USER_NAME_REGEX = /^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
+import {
+    USER_NAME_REGEX
+} from '../../../../constants';
 
 const Signup = ({
     classes,
@@ -107,10 +108,11 @@ const Signup = ({
                 }
             `,
             variables: {
-                fullName: fullName,
-                userName: userName,
-                password: md5(password)
-            }
+                fullName: _fullName,
+                userName: _userName,
+                password: md5(_password)
+            },
+            fetchPolicy: "no-cache"
         }).then(e => {
             const response = e.data.signup;
             if(response.code === 200) {
