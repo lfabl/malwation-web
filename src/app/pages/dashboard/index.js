@@ -8,11 +8,21 @@ import {
     useGlobalState
 } from '../../context';
 import {
+    setClient,
     client
 } from '../../api';
 import {
+    createHttpLink,
+    InMemoryCache,
+    ApolloClient,
     gql
 } from '@apollo/client';
+import {
+    setContext
+} from '@apollo/client/link/context';
+import {
+    API_URL 
+} from '../../constants/url';
 
 const Dashboard = ({
     history
@@ -21,7 +31,7 @@ const Dashboard = ({
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if(token && !globalState.userData.login) {
+        if(token) {
             client.query({
                 query: gql`
                     query tokenControl(
@@ -37,12 +47,29 @@ const Dashboard = ({
                     }
                 `,
                 variables: {
-                    token
+                    token: token
                 },
                 fetchPolicy: "no-cache"
             }).then(e => {
                 const response = e.data.tokenControl;
                 if(response.code === 200) {
+                    const authLink = setContext((_, {
+                        headers 
+                    }) => {
+                        return {
+                            headers: {
+                                ...headers,
+                                authorization: token
+                            }
+                        };
+                    });
+                    const httpLink = createHttpLink({
+                        uri: API_URL
+                    });
+                    setClient(new ApolloClient({
+                        link: authLink.concat(httpLink),
+                        cache: new InMemoryCache()
+                    }));
                     setGlobalState({
                         userData: {
                             login: true,
@@ -53,25 +80,47 @@ const Dashboard = ({
                     });
                 } else {
                     alert(response.message);
-                    history.push("/dashboard/signin");
-                    localStorage.removeItem('token');
+                    setGlobalState({
+                        userData: {
+                            login: false,
+                            userName: null,
+                            token: null,
+                            reLogin: false
+                        }
+                    });
                 }
             }).catch(e => {
                 if(e.message) {
                     alert(e.message);
-                    history.push("/dashboard/signin");
+                    setGlobalState({
+                        userData: {
+                            login: false,
+                            userName: null,
+                            token: null,
+                            reLogin: false
+                        }
+                    });
                 } else {
                     alert(e);
-                    history.push("/dashboard/signin");
+                    setGlobalState({
+                        userData: {
+                            login: false,
+                            userName: null,
+                            token: null,
+                            reLogin: false
+                        }
+                    });
                 }
-                localStorage.removeItem('token');
             });
-        } else {
-            if(globalState.userData && globalState.userData.login) {
-                history.push("/dashboard/main");
-            } else if(window.location.pathname.indexOf("/signup") === -1) {
-                history.push("/dashboard/signin");
-            }
+        }
+    }, []);
+
+    useEffect(() => {
+        if(globalState.userData && globalState.userData.login) {
+            history.push("/dashboard/main");
+        } else if(window.location.pathname.indexOf("/signup") === -1) {
+            history.push("/dashboard/signin");
+            localStorage.removeItem('token');
         }
     }, [globalState.userData]);
 

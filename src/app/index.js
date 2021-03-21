@@ -12,27 +12,47 @@ import Navigation from './navigation';
 import Context, {
     useGlobalState 
 } from './context';
+import {
+    useTheme
+} from './core/context';
+
+const ContextAPI = ({
+    classes
+}) => {
+    const [globalState, setGlobalState] = useGlobalState();
+
+    const [theme, setTheme] = useTheme();
+
+    const {
+        colors
+    } = theme;
+
+    return <div
+        className={classes.container}
+        style={{
+            backgroundColor: colors.background
+        }}
+    >
+        {
+            globalState.userData.login ?
+                null
+                :
+                <Header
+                    menuData={MENU}
+                />
+        }
+        <Navigation/>
+    </div>;
+};
 
 function App({
     classes
 }) {
-    const [globalState, setGlobalState] = useGlobalState();
-
     return <Core>
         <Context>
-            <div
-                className={classes.container}
-            >
-                {
-                    globalState.userData.login ?
-                        null
-                        :
-                        <Header
-                            menuData={MENU}
-                        />
-                }
-                <Navigation/>
-            </div>
+            <ContextAPI
+                classes={classes}
+            />
         </Context>
     </Core>;
 }

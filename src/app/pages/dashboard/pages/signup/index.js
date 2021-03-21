@@ -190,7 +190,8 @@ const Signup = ({
                 <div
                     className={classes.title}
                     style={{
-                        marginBottom: spaces.content * 2
+                        marginBottom: spaces.content * 2,
+                        color: colors.body
                     }}
                 >
                     Signup

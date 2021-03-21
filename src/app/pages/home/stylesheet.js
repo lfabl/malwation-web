@@ -3,8 +3,7 @@ const stylesheet = {
         fontFamily: "'Exo 2', sans-serif",
         justifyContent: "center",
         alignItems: "center",
-        display: "flex",
-        height: "100%"
+        display: "flex"
     }
 };
 export default stylesheet;

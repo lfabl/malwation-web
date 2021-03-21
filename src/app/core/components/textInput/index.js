@@ -44,9 +44,11 @@ const TextInput = ({
             paddingRight: spaces.content * 1.5,
             paddingLeft: spaces.content * 1.5,
             paddingTop: spaces.content * 1.25,
+            backgroundColor: colors.layer2,
             borderColor: colors.seperator,
             borderRadius: radiuses.card,
             borderWidth: borders.card,
+            color: colors.body,
             ...style
         }}
         {...props}

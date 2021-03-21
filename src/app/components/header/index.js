@@ -24,7 +24,7 @@ const Header = ({
     return <div
         className={classes.container}
         style={{
-            backgroundColor: colors.background,
+            backgroundColor: colors.panel,
             paddingRight: spaces.container * 2,
             paddingLeft: spaces.container * 2,
             paddingBottom: spaces.container,

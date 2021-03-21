@@ -1,7 +1,7 @@
 export const DEFAULT_THEME_STATE = {
     colors: {
     },
-    value: "light"
+    value: "dark"
 };
 
 export const DEFAULT_TOKENS_STATE = {

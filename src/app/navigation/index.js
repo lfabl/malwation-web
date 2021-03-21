@@ -9,12 +9,20 @@ import Dashboard from '../pages/dashboard';
 import Main from '../pages/dashboard/pages/main';
 import Signin from '../pages/dashboard/pages/signin';
 import Signup from '../pages/dashboard/pages/signup';
+import {
+    useTheme 
+} from '../core/context';
 
 export const DashboardNavigation = () => {
+    const [theme, setTheme] = useTheme();
+
+    const {
+        colors
+    } = theme;
+
     return <main
         style={{
-            height: "100%",
-            width: "100%"
+            backgroundColor: colors.background
         }}
     >
         <Switch>
@@ -35,12 +43,7 @@ export const DashboardNavigation = () => {
 };
 
 const Navigation = () => {
-    return <main
-        style={{
-            height: "100%",
-            width: "100%"
-        }}
-    >
+    return <main>
         <Switch>
             <Route
                 component={Home}

@@ -19,15 +19,25 @@ import {
     USER_NAME_REGEX
 } from '../../../../constants';
 import {
+    setClient,
     client
 } from '../../../../api';
 import {
+    createHttpLink,
+    InMemoryCache,
+    ApolloClient,
     gql
 } from '@apollo/client';
 import md5 from 'md5';
 import {
     useGlobalState
 } from '../../../../context';
+import {
+    setContext
+} from '@apollo/client/link/context';
+import {
+    API_URL 
+} from '../../../../constants/url';
 
 const Signin = ({
     classes
@@ -122,6 +132,23 @@ const Signin = ({
                         token: response.token
                     }
                 });
+                const authLink = setContext((_, {
+                    headers 
+                }) => {
+                    return {
+                        headers: {
+                            ...headers,
+                            authorization: response.token
+                        }
+                    };
+                });
+                const httpLink = createHttpLink({
+                    uri: API_URL,
+                });
+                setClient(new ApolloClient({
+                    link: authLink.concat(httpLink),
+                    cache: new InMemoryCache()
+                }));
                 if(_rememberMe) localStorage.setItem('token', response.token);
             } else {
                 alert(response.message);
@@ -145,6 +172,7 @@ const Signin = ({
         <div
             className={classes.content}
             style={{
+                backgroundColor: colors.layer1,
                 borderColor: colors.seperator,
                 borderRadius: radiuses.card,
                 borderWidth: borders.card
@@ -184,7 +212,8 @@ const Signin = ({
                 <div
                     className={classes.title}
                     style={{
-                        marginBottom: spaces.content * 2
+                        marginBottom: spaces.content * 2,
+                        color: colors.body
                     }}
                 >
                     Signin
@@ -223,7 +252,8 @@ const Signin = ({
                     />
                     <span
                         style={{
-                            marginLeft: spaces.content
+                            marginLeft: spaces.content,
+                            color: colors.body
                         }}
                     >
                         Beni hatırla.
