@@ -1,5 +1,7 @@
 import React, {
-    useState
+    useEffect,
+    useState,
+    useRef
 } from 'react';
 import injectSheet from 'react-jss';
 import stylesheet from './stylesheet';
@@ -43,6 +45,15 @@ const Signup = ({
         borders,
         spaces
     } = tokens;
+
+    const userNameRef = useRef();
+    const fullNameRef = useRef();
+    const passwordRef = useRef();
+    const rePasswordRef = useRef();
+
+    useEffect(() => {
+        userNameRef.current.focus();
+    }, []);
 
     const register = () => {
         const _fullName = JSON.parse(JSON.stringify(fullName));
@@ -188,6 +199,8 @@ const Signup = ({
                     placeholder="Username"
                     value={userName}
                     onChange={e => setUserName(e)}
+                    referance={userNameRef}
+                    onKeyUp={e => e.keyCode === 13 ? fullNameRef.current.focus() : null}
                     style={{
                         marginBottom: spaces.content * 1.5
                     }}
@@ -196,6 +209,8 @@ const Signup = ({
                     placeholder="Fullname"
                     value={fullName}
                     onChange={e => setFullName(e)}
+                    referance={fullNameRef}
+                    onKeyUp={e => e.keyCode === 13 ? passwordRef.current.focus() : null}
                     style={{
                         marginBottom: spaces.content * 1.5
                     }}
@@ -204,7 +219,9 @@ const Signup = ({
                     placeholder="Password"
                     type="password"
                     value={password}
+                    referance={passwordRef}
                     onChange={e => setPassword(e)}
+                    onKeyUp={e => e.keyCode === 13 ? rePasswordRef.current.focus() : null}
                     style={{
                         marginBottom: spaces.content * 1.5
                     }}
@@ -213,7 +230,9 @@ const Signup = ({
                     placeholder="Re-Password"
                     type="password"
                     value={rePassword}
+                    referance={rePasswordRef}
                     onChange={e => setRePassword(e)}
+                    onKeyUp={e => e.keyCode === 13 ? register() : null}
                     style={{
                         marginBottom: spaces.content * 1.5
                     }}

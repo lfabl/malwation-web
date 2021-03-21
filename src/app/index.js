@@ -9,7 +9,7 @@ import {
     MENU
 } from './constants';
 import Navigation from './navigation';
-import {
+import Context, {
     useGlobalState 
 } from './context';
 
@@ -19,19 +19,21 @@ function App({
     const [globalState, setGlobalState] = useGlobalState();
 
     return <Core>
-        <div
-            className={classes.container}
-        >
-            {
-                globalState.userData.login ?
-                    null
-                    :
-                    <Header
-                        menuData={MENU}
-                    />
-            }
-            <Navigation/>
-        </div>
+        <Context>
+            <div
+                className={classes.container}
+            >
+                {
+                    globalState.userData.login ?
+                        null
+                        :
+                        <Header
+                            menuData={MENU}
+                        />
+                }
+                <Navigation/>
+            </div>
+        </Context>
     </Core>;
 }
 export default injectSheet(stylesheet)(App);

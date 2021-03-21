@@ -10,6 +10,7 @@ const TextInput = ({
     wrap = "no-wrap",
     type = "text",
     className,
+    referance,
     onChange,
     classes,
     value,
@@ -36,6 +37,7 @@ const TextInput = ({
         onChange={e => onChange ? onChange(e.target.value) : null}
         value={value}
         type={type}
+        ref={referance}
         style={{
             alignSelf: wrap === "no-wrap" ? "stretch" : wrap === "wrap" ? "baseline" : null,
             paddingBottom: spaces.content * 1.25,

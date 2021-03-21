@@ -1,5 +1,7 @@
 import React, {
-    useState
+    useEffect,
+    useState,
+    useRef
 } from 'react';
 import injectSheet from 'react-jss';
 import stylesheet from './stylesheet';
@@ -23,13 +25,18 @@ import {
     gql
 } from '@apollo/client';
 import md5 from 'md5';
+import {
+    useGlobalState
+} from '../../../../context';
 
 const Signin = ({
-    classes,
-    history
+    classes
 }) => {
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
+    const [rememberMe, setRememberMe] = useState(false);
+
+    const [globalState, setGlobalState] = useGlobalState();
 
     const [tokens, setTokens] = useTokens();
     const [theme, setTheme] = useTheme();
@@ -43,9 +50,17 @@ const Signin = ({
         spaces
     } = tokens;
 
+    const userNameRef = useRef();
+    const passwordRef = useRef();
+
+    useEffect(() => {
+        userNameRef.current.focus();
+    }, []);
+
     const login = () => {
         const _userName = JSON.parse(JSON.stringify(userName));
         const _password = JSON.parse(JSON.stringify(password));
+        const _rememberMe = JSON.parse(JSON.stringify(rememberMe));
 
         if(_password.trim() === "") {
             alert("Parola boş olamaz.");
@@ -72,6 +87,13 @@ const Signin = ({
             return false;
         }
 
+        let variables = {
+            userName: _userName,
+            password: md5(_password)
+        };
+
+        if(_rememberMe) variables.rememberMe = true;
+
         client.query({
             query: gql`
                 query signin(
@@ -88,16 +110,18 @@ const Signin = ({
                     }
                 }
             `,
-            variables: {
-                userName: _userName,
-                password: md5(_password)
-            },
+            variables,
             fetchPolicy: "no-cache"
         }).then(e => {
             const response = e.data.signin;
             if(response.code === 200) {
                 alert(response.message);
-                history.push("/dashboard/main");
+                setGlobalState({
+                    userData: {
+                        login: true,
+                        token: response.token
+                    }
+                });
             } else {
                 alert(response.message);
             }
@@ -167,7 +191,9 @@ const Signin = ({
                 <TextInput
                     placeholder="Username"
                     value={userName}
+                    referance={userNameRef}
                     onChange={e => setUserName(e)}
+                    onKeyUp={e => e.keyCode === 13 ? passwordRef.current.focus() : null}
                     style={{
                         marginBottom: spaces.content * 1.5
                     }}
@@ -176,11 +202,32 @@ const Signin = ({
                     placeholder="Password"
                     type="password"
                     value={password}
+                    referance={passwordRef}
                     onChange={e => setPassword(e)}
+                    onKeyUp={e => e.keyCode === 13 ? login() : null}
                     style={{
                         marginBottom: spaces.content * 1.5
                     }}
                 />
+                <div
+                    className={classes.rememberMeContainer}
+                    onClick={() => setRememberMe(!rememberMe)}
+                    style={{
+                        marginBottom: spaces.content * 1.5
+                    }}
+                >
+                    <input
+                        type="checkbox"
+                        checked={rememberMe}
+                    />
+                    <span
+                        style={{
+                            marginLeft: spaces.content
+                        }}
+                    >
+                        Beni hatırla.
+                    </span>
+                </div>
                 <Button
                     value="Signin"
                     onClick={() => login()}

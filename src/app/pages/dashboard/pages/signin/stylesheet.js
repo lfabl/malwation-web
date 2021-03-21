@@ -1,3 +1,8 @@
+import {
+    active,
+    hover 
+} from "../../../../core/theme/helpers";
+
 const stylesheet = {
     container: {
         justifyContent: "center",
@@ -32,6 +37,21 @@ const stylesheet = {
     title: {
         fontFamily: "'Exo 2', sans-serif",
         fontSize: 24
+    },
+    rememberMeContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        userSelect: "none",
+        display: "flex",
+        "&:hover": {
+            ...hover
+        },
+        "&:active": {
+            ...active
+        },
+        "& span": {
+            fontFamily: "'Exo 2', sans-serif"
+        }
     }
 };
 export default stylesheet;
